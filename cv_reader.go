@@ -60,7 +60,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/ledongthuc/pdf"
+	"github.com/ledongthuc/pdf"  // go get -u github.com/ledongthuc/pdf
 )
 
 func main() {
