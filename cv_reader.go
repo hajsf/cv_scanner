@@ -52,27 +52,46 @@ func main() {
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
 
-	"github.com/ledongthuc/pdf"  // go get -u github.com/ledongthuc/pdf
+	"github.com/ledongthuc/pdf"
 )
 
 func main() {
 	pdf.DebugOn = true
+	p := []string{}
+
+	// Open file and create scanner on top of it
+	file, err := os.Open("skills.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	scanner := bufio.NewScanner(file)
+
+	// Default scanner is bufio.ScanLines. Lets use ScanWords.
+	// Could also use a custom function of SplitFunc type
+	scanner.Split(bufio.ScanLines) //    //.  ScanWords)
+	// Scan for next token.
+	for scanner.Scan() {
+		p = append(p, scanner.Text())
+	}
+	skills := strings.Join(p, "|")
 
 	files, err := ioutil.ReadDir(".")
 	if err != nil {
 		log.Fatal(err)
 	}
-	p := []string{"import", "shipping documents", "ERP", "supply chain", "(b/l|(bill of loading))", "chemical (permit)",
-		"permit", "HS (code)", "Police (permit)"} //  to be scanned in the given CV
-	skills := strings.Join(p, "|")
+	//	p := []string{"import", "shipping documents", "ERP", "supply chain", "(b/l|(bill of loading))", "chemical (permit)",
+	//		"permit", "HS (code)", "Police (permit)"} //  to be scanned in the given CV
+	//	skills := strings.Join(p, "|")
 
 	re := regexp.MustCompile(`(?i)` + skills)
 
